@@ -21,7 +21,7 @@
 ## Цель работы
 Научиться передавать в Unity данные из Google Sheets с помощью Python.
 
-## Задание 1
+### Задание 1
 ### Выберите одну из компьютерных игр, приведите скриншот её геймплея и краткое описание концепта игры. Выберите одну из игровых переменных в игре (ресурсы, внутри игровая валюта, здоровье персонажей и т.д.), опишите её роль в игре, условия изменения / появления и диапазон допустимых значений. Постройте схему экономической модели в игре и укажите место выбранного ресурса в ней.
 
 ### Игра: "Веселая ферма"
@@ -49,9 +49,9 @@
 Схема экономической модели в игре.
 Игровая валюта занимает очень важную роль в модели, поэтому я расположил её в центре.
 
-![Economy](https://github.com/RomanGleizer/Workshop2/assets/125725530/0e1f95e4-7402-4180-bc6d-84dea77981c7)
+![Model](https://github.com/RomanGleizer/Workshop2/assets/125725530/d0945ac7-46a8-41a6-8e47-7633344b3e5e)
 
-## Задание 2
+### Задание 2
 ### С помощью скрипта на языке Python заполните google-таблицу данными, описывающими выбранную игровую переменную в выбранной игре (в качестве таких переменных может выступать игровая валюта, ресурсы, здоровье и т.д.). Средствами google-sheets визуализируйте данные в google-таблице (постройте график, диаграмму и пр.) для наглядного представления выбранной игровой величины.
 
 Ход работы:
@@ -59,12 +59,11 @@
 - Передать данные в таблицу, построить график и диаграмму, используя переданные данные.
 
 ```py
-
 import gspread
 import numpy as np
 gc = gspread.service_account(filename='unitydatascience-400313-4d94d452be4c.json')
 sh = gc.open("UnityWorkshop2")
-price = np.random.randint(2000, 10000, 11)
+price = np.random.randint(-50, 50, 11)
 mon = list(range(1,11))
 i = 0
 while i <= len(mon):
@@ -72,19 +71,18 @@ while i <= len(mon):
     if i == 0:
         continue
     else:
-        tempInf = ((price[i-1]-price[i-2])/price[i-2])*100
+        tempInf = price[i - 1]
         tempInf = str(tempInf)
         tempInf = tempInf.replace('.',',')
         sh.sheet1.update(('A' + str(i)), str(i))
         sh.sheet1.update(('B' + str(i)), str(price[i-1]))
         sh.sheet1.update(('C' + str(i)), str(tempInf))
         print(tempInf)
-
 ```
 
-![image](https://github.com/RomanGleizer/Workshop2/assets/125725530/22df2ae9-588e-4280-a14b-5f0efab1a3c3)
+!![image](https://github.com/RomanGleizer/Workshop2/assets/125725530/1f27ffd1-5c2e-4a62-ad42-3f8a4e082bc2)
 
-## Задание 3
+### Задание 3
 ### Настройте на сцене Unity воспроизведение звуковых файлов, описывающих динамику изменения выбранной переменной. Например, если выбрано здоровье главного персонажа вы можете выводить сообщения, связанные с его состоянием.
 
 Ход работы:
@@ -94,7 +92,6 @@ while i <= len(mon):
 
 
 ```cs
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -121,22 +118,22 @@ public class NewBehaviourScript : MonoBehaviour
     {
         if (!dataSet.ContainsKey("Mon_" + i.ToString())) return;
 
-        if (dataSet["Mon_" + i.ToString()] <= 10 & statusStart == false & i != dataSet.Count)
+        if (dataSet["Mon_" + i.ToString()] > 0 & statusStart == false)
         {
             StartCoroutine(PlaySelectAudioGood());
-            Debug.Log("Инфляция: " + dataSet["Mon_" + i.ToString()]);
+            Debug.Log("Заработок: +" + dataSet["Mon_" + i.ToString()]);
         }
 
-        if (dataSet["Mon_" + i.ToString()] > 10 & dataSet["Mon_" + i.ToString()] < 100 & statusStart == false & i != dataSet.Count)
+        if (dataSet["Mon_" + i.ToString()] == 0 & statusStart == false)
         {
             StartCoroutine(PlaySelectAudioNormal());
-            Debug.Log("Инфляция: " + dataSet["Mon_" + i.ToString()]);
+            Debug.Log("Сохранили баланс: " + dataSet["Mon_" + i.ToString()]);
         }
 
-        if (dataSet["Mon_" + i.ToString()] >= 100 & statusStart == false & i != dataSet.Count + 1)
+        if (dataSet["Mon_" + i.ToString()] < 0 & statusStart == false)
         {
             StartCoroutine(PlaySelectAudioBad());
-            Debug.Log("Инфляция: " + dataSet["Mon_" + i.ToString()]);
+            Debug.Log("Трата: " + dataSet["Mon_" + i.ToString()]);
         }
     }
 
@@ -189,7 +186,8 @@ public class NewBehaviourScript : MonoBehaviour
 }
 ```
 
-![image](https://github.com/RomanGleizer/Workshop2/assets/125725530/b717b276-92d3-4c32-a387-c28a04197427)
+![image](https://github.com/RomanGleizer/Workshop2/assets/125725530/70f3bf5f-305a-4bba-9cd9-435aa653d47c)
+
 
 ## Выводы
 
